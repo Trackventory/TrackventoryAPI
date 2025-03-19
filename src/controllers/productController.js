@@ -123,4 +123,35 @@ exports.addProduct = async (req, res) => {
     }
 }
 
-exports.updateProduct 
+exports.updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id) || !id) {
+            return res.status(400).json({ 
+                status: 'fail', 
+                message: 'Invalid product ID' 
+            });
+        }
+
+        const { _id, isDeleted, createdAt, updatedAt, ...updateData } = req.body;
+        const product = await Products.findByIdAndUpdate(id, updateData, { new: true });
+        if (!product) {
+            return res.status(404).json({ 
+                status: 'fail', 
+                message: 'Product not found' 
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            message: 'Product updated successfully',
+            data: product
+        });
+    } catch (error) {
+        console.error('Error in updateProduct:', error);
+        res.status(500).json({ 
+            status: 'error',
+            message: 'Internal server error' 
+        });
+        
+    }
+}
