@@ -61,7 +61,7 @@ exports.getProductById = async (req, res) => {
 };
 
 
-exports.deleteProductById = async (req, res) => {
+exports.deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id) || !id) {
@@ -116,10 +116,18 @@ exports.addProduct = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in addProduct:', error);
-        res.status(500).json({ 
-            status: 'error',
-            message: 'Internal server error' 
-        });
+        if (error.name === 'ValidationError') {
+            const errors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Validation Error',
+                errors
+            });
+        }
+        // res.status(500).json({ 
+        //     status: 'error',
+        //     message: 'Internal server error' 
+        // });
     }
 }
 
