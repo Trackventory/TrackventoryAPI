@@ -2,6 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv/config');
+const { isValidPhone, isValidEmail, isValidPassword, isValidRole } = require('../utils/validator');
+
 
 const signUserUp = async (req, res) => {
     try {
@@ -21,13 +23,34 @@ const signUserUp = async (req, res) => {
             });
         };
 
-        const validRoles = ['Admin', 'Sales Person', 'Manager'];
-        if (role && !validRoles.includes(role.trim())) {
+        if (phone && !isValidPhone(phone)) {
+          return res.status(400).json({
+              success: false,
+              message: 'Invalid phone number. Use format: +2348012345678 or 08012345678'
+          });
+        }
+
+        if (!isValidEmail(email)) {
             return res.status(400).json({
                 success: false,
-                message: `Invalid role. Allowed roles are: ${validRoles.join(', ')}`
+                message: 'Invalid email format.'
             });
-        };
+        }
+
+        if (!isValidPassword(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must contain at least 8 characters, including uppercase, lowercase, and a number.'
+            });
+        }
+
+        if (role && !isValidRole(role)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid role. Allowed roles are: 'Admin', 'Sales Person', 'Manager'"
+            });
+        }
+
 
         const user = await User.findOne({ email });
         if (user) {
@@ -135,6 +158,14 @@ const changePassword = async (req, res) => {
                 message: 'Old password not correct. Please try again.'
             });
         }
+
+        // validate new password
+        if (!isValidPassword(newPassword)) {
+          return res.status(400).json({
+              success: false,
+              message: 'New password must contain at least 8 characters, including uppercase, lowercase, and a number.'
+          });
+      }
 
         // hash new password
         const salt = await bcrypt.genSalt(10);

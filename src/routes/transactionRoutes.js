@@ -6,21 +6,26 @@ const {
   getTransactionById,
   getTransactionByType,
 } = require('../controllers/transactionController');
-const { authMiddleware, roleMiddleware} = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware');
+const { roleMiddleware } = require('../middleware/roleMiddleware');
+const { activeUserMiddleware } = require('../middleware/activeUserMiddleware');
 
 const transactionRouter = express.Router();
 
+transactionRouter.use(authMiddleware);
+transactionRouter.use(activeUserMiddleware);
+
 // Admin and Manager can stock up inventory
-transactionRouter.post('/stock-up', authMiddleware, roleMiddleware(['Admin', 'Manager']), stockUp);
+transactionRouter.post('/stock-up', roleMiddleware(['Admin', 'Manager']), stockUp);
 
 // Sales Person and Admin can sell products
-transactionRouter.post('/sell-out', authMiddleware, roleMiddleware(['Admin', 'Sales Person']), sellOut);
+transactionRouter.post('/sell-out', roleMiddleware(['Admin', 'Sales Person']), sellOut);
 
 // Only Admin can view all transactions
-transactionRouter.get('/', authMiddleware, roleMiddleware(['Admin']), getAllTransactions);
+transactionRouter.get('/', roleMiddleware(['Admin']), getAllTransactions);
 
 // Admin and Manager can view specific transactions
-transactionRouter.get('/get-transaction-by-id/:id', authMiddleware, roleMiddleware(['Admin', 'Manager']), getTransactionById);
-transactionRouter.get('/get-transaction-by-type/:type', authMiddleware, roleMiddleware(['Admin', 'Manager']), getTransactionByType);
+transactionRouter.get('/get-by-id/:id', roleMiddleware(['Admin', 'Manager']), getTransactionById);
+transactionRouter.get('/get-by-type/:type', roleMiddleware(['Admin', 'Manager']), getTransactionByType);
 
 module.exports = transactionRouter;
