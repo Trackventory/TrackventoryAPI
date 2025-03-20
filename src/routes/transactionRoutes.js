@@ -5,7 +5,7 @@ const {
   getAllTransactions,
   getTransactionById,
   getTransactionByType,
-} = require('../controllers/transactionControllers');
+} = require('../controllers/transactionController');
 const { authMiddleware, roleMiddleware} = require('../middleware/authMiddleware');
 
 const transactionRouter = express.Router();
