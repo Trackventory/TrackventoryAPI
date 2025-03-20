@@ -9,6 +9,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phone: {
+        type: String
+    },
     email: { 
         type: String,
         required: true,
@@ -21,8 +24,12 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         enum: ['Admin', 'Manager', 'Sales Person'],
-        required: true
-    }
+        default: 'Sales Person'
+    },
+    active: {
+        type: Boolean,
+        default: true
+    },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);

@@ -1,12 +1,23 @@
 const express = require('express');
-const Router = express.Router();
 const productController = require('../controllers/productController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware');
+const { roleMiddleware } = require('../middleware/roleMiddleware');
+const { activeUserMiddleware } = require('../middleware/activeUserMiddleware');
 
-Router.get('/products',   productController.getAllProducts);
-Router.get('/products/:id', productController.getProductById);
-Router.post('/products', productController.addProduct);
-Router.put('/products/:id', productController.updateProduct);
-Router.delete('/products/:id', productController.deleteProduct);
+const productRouter = express.Router();
 
-module.exports = Router;
+productRouter.use(authMiddleware);
+productRouter.use(activeUserMiddleware);
+
+// All active users can get all products
+Router.get('/',   productController.getAllProducts);
+
+// All active users can get specific products
+Router.get('/:id', productController.getProductById);
+
+// Only active Admin and Manager can add, update, and delete products
+Router.post('/add', productController.addProduct);
+Router.put('/update/:id', productController.updateProduct);
+Router.delete('/delete/:id', productController.deleteProduct);
+
+module.exports = productRouter;

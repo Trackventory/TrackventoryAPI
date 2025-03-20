@@ -20,7 +20,7 @@ const productSchema = new Schema({
         required: [true, 'Price is required'],
         min: [0, 'Price cannot be negative'],
     },
-    stock: {
+    quantity: {
         type: Number,
         required: [true, 'Stock quantity is required'],
         min: [0, 'Stock cannot be negative'],
