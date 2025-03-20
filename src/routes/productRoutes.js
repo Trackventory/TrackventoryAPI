@@ -10,14 +10,13 @@ productRouter.use(authMiddleware);
 productRouter.use(activeUserMiddleware);
 
 // All active users can get all products
-Router.get('/',   productController.getAllProducts);
+productRouter.get('/',  productController.getAllProducts);
 
 // All active users can get specific products
-Router.get('/:id', productController.getProductById);
+productRouter.get('/:id', productController.getProductById);
 
-// Only active Admin and Manager can add, update, and delete products
-Router.post('/add', productController.addProduct);
-Router.put('/update/:id', productController.updateProduct);
-Router.delete('/delete/:id', productController.deleteProduct);
+// Only active Admin and Manager can update, and delete products
+productRouter.put('/update/:id', productController.updateProduct);
+productRouter.delete('/delete/:id', productController.deleteProduct);
 
 module.exports = productRouter;

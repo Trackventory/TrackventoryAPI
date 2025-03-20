@@ -1,6 +1,6 @@
 const authRouter = require('./authRoutes');
 const userRouter = require('./userRoutes');
-const productRouter = require('./src/routes/productRoutes');
+const productRouter = require('./productRoutes');
 const transactionRouter = require('./transactionRoutes');
 
 const express = require('express');
