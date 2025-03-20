@@ -1,9 +1,9 @@
-const Products = require('../models/product');
+const Product = require('../models/product');
 const mongoose = require('mongoose');
 
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Products.find();
+        const products = await Product.find();
         
         if (!products || products.length === 0) {
             return res.status(404).json({ 
@@ -37,7 +37,7 @@ exports.getProductById = async (req, res) => {
             });
         }
 
-        const product = await Products.findById(id);
+        const product = await Product.findById(id);
         
         if (!product) {
             return res.status(404).json({ 
@@ -60,38 +60,6 @@ exports.getProductById = async (req, res) => {
     }
 };
 
-
-exports.deleteProduct = async (req, res) => {
-    try {
-        const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id) || !id) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Invalid product ID' 
-            });
-        }
-        const product = await Products.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
-        if (!product) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Product not found' 
-            });
-        }
-        res.status(200).json({
-            success: true,
-            message: 'Product deleted successfully',
-            data: product
-        });
-    } catch (error) {
-        console.error('Error in deleteProductById:', error);
-        res.status(500).json({ 
-            success: false,
-            message: 'Internal server error' 
-        });
-        
-    }
-}
-
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -103,7 +71,7 @@ exports.updateProduct = async (req, res) => {
         }
 
         const { _id, isDeleted, createdAt, updatedAt, ...updateData } = req.body;
-        const product = await Products.findByIdAndUpdate(id, updateData, { new: true });
+        const product = await Product.findByIdAndUpdate(id, updateData, { new: true });
         if (!product) {
             return res.status(404).json({ 
                 success: false, 
@@ -117,6 +85,37 @@ exports.updateProduct = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in updateProduct:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Internal server error' 
+        });
+        
+    }
+}
+
+exports.deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(id) || !id) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Invalid product ID' 
+            });
+        }
+        const product = await Product.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+        if (!product) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Product not found' 
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Product deleted successfully',
+            data: product
+        });
+    } catch (error) {
+        console.error('Error in deleteProductById:', error);
         res.status(500).json({ 
             success: false,
             message: 'Internal server error' 

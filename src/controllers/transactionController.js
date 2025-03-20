@@ -1,57 +1,6 @@
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
-const Products = require('../models/product');
-
-// const stockUp = async(req, res) => {
-//   try {
-//     const {productId, quantity} = req.body;
-//     if (!productId || quantity == null) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Product ID and quantity are required!',
-//       });
-//     };
-
-//     if (quantity <= 0) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Quantity must be greater than 0!',
-//       });
-//     };
-    
-//     const userId = req.userInfo.id;
-
-//     const product = await Product.findById(productId);
-//     if (!product) {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Product not found!',
-//       });
-//     }
-
-//     product.quantity += quantity;
-
-//     await product.save();
-//     await Transaction.create({
-//       user: userId,
-//       product: productId,
-//       quantity,
-//       type: 'stock_in',
-//       date: new Date(),
-//     });
-
-//     res.status(201).json({
-//       success: true,
-//       message: 'Product stocked up successfully',
-//       data: product
-//   });
-//   } catch (err) {
-//     res.status(500).json({
-//       success: false,
-//       message: 'Internal server error', error: err.message
-//     });
-//   }
-// }
+const Product = require('../models/product');
 
 const stockUp = async (req, res) => {
   try {
@@ -69,7 +18,7 @@ const stockUp = async (req, res) => {
 
     if (productId) {
       // Find existing product
-      product = await Products.findById(productId);
+      product = await Product.findById(productId);
 
       if (!product) {
         return res.status(404).json({ 
@@ -91,7 +40,7 @@ const stockUp = async (req, res) => {
         });
       }
 
-      const existingProduct = await Products.findOne({ name });
+      const existingProduct = await Product.findOne({ name });
 
       if (existingProduct) {
         return res.status(400).json({
@@ -100,7 +49,7 @@ const stockUp = async (req, res) => {
         });
       }
 
-      product = await Products.create({ name, description, price, quantity, image, category });
+      product = await Product.create({ name, description, price, quantity, image, category });
     }
 
     // Create transaction
@@ -180,7 +129,10 @@ const sellOut = async(req, res) => {
       quantity,
       type: 'sell_out',
       date: new Date(),
-    });
+    }).populate({
+      path: "product",
+      select: "name category -_id"
+    });;
 
     res.status(201).json({
       success: true,
@@ -199,12 +151,9 @@ const getAllTransactions = async (req, res) => {
     const transactions = await Transaction.find()
     .populate({
       path: "user",
-      select: "firstName lastName email -_id"
+      select: "firstName lastName email _id"
     })
-    .populate({
-      path: "product",
-      select: "name category -_id"
-    });
+    .populate("product");
 
     if (!transactions.length) {
       return res.status(400).json({
@@ -215,8 +164,8 @@ const getAllTransactions = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: transactions,
-      message: 'Operation successful!'
+      message: 'Operation successful!',
+      data: transactions      
     });
   } catch (err) {
     res.status(500).json({
@@ -239,12 +188,9 @@ const getTransactionById = async (req, res) => {
     const transaction = await Transaction.findById(id)
     .populate({
       path: "user",
-      select: "firstName lastName email -_id"
+      select: "firstName lastName email _id"
     })
-    .populate({
-      path: "product",
-      select: "name category -_id"
-    });
+    .populate("product");
 
     if (!transaction) {
       return res.status(400).json({
@@ -255,8 +201,8 @@ const getTransactionById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: transaction,
-      message: 'Operation successful!'
+      message: 'Operation successful!',
+      data: transaction
     });
   } catch (err) {
     res.status(500).json({
@@ -281,10 +227,7 @@ const getTransactionByType = async (req, res) => {
       path: "user",
       select: "firstName lastName email -_id"
     })
-    .populate({
-      path: "product",
-      select: "name category -_id"
-    });
+    .populate("product");
 
     if (!transactions.length) {
       return res.status(400).json({
