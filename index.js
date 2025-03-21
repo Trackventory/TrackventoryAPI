@@ -11,6 +11,10 @@ connectToDB();
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.send("Welcome to Trackventory API!");
+});
+
 app.use('/api/v1/trackventory', mainRouter);
 
 app.listen(PORT, () => {
