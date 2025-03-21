@@ -112,7 +112,7 @@ const signUserIn = async (req, res) => {
         let token = jwt.sign(
           { id: user._id, role: user.role },
           process.env.JWT_SECRET_KEY,
-        //   { expiresIn: '15m'}
+          { expiresIn: '30m'}
         );
 
         const { password: _, ...userData } = user.toObject();
