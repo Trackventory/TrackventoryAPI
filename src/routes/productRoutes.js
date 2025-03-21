@@ -17,6 +17,7 @@ productRouter.get('/:id', productController.getProductById);
 
 // Only active Admin and Manager can update, and delete products
 productRouter.put('/update/:id', productController.updateProduct);
+
 productRouter.delete('/delete/:id', productController.deleteProduct);
 
 module.exports = productRouter;

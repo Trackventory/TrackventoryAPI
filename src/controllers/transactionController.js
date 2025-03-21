@@ -132,19 +132,6 @@ const sellOut = async (req, res) => {
 
     await product.save();
 
-    // the code below produced a 500 error: "error": "Transaction.create(...).populate is not a function"
-    // await Transaction.create({
-    //   user: userId,
-    //   product: productId,
-    //   quantity,
-    //   type: 'sell_out',
-    //   date: new Date(),
-    // }).populate({
-    //   path: "product",
-    //   select: "name category -_id"
-    // });;
-
-    // I reimplemented as below:
     const transaction = new Transaction({
       user: userId,
       product: productId,
@@ -154,7 +141,7 @@ const sellOut = async (req, res) => {
     });
     await transaction.save();
 
-    // to populate product details
+    // Populate product details
     const populatedTransaction = await transaction.populate({
       path: "product",
       select: "name category _id",
@@ -163,7 +150,7 @@ const sellOut = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Transaction successful!",
-      // to return populated data
+      // Return populated data
       transaction: populatedTransaction,
     });
   } catch (err) {

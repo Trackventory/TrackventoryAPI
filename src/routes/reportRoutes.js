@@ -11,20 +11,11 @@ const {
 
 reportRouter.use(authMiddleware);
 
-reportRouter.post(
-  "/stock",
-  roleMiddleware(["Admin", "Manager"]),
-  getStockReport
-);
-reportRouter.post(
-  "/sales",
-  roleMiddleware(["Admin", "Manager"]),
-  getSalesReport
-);
-reportRouter.post(
-  "/out-of-stock",
-  roleMiddleware(["Admin", "Manager"]),
-  getOutOfStockReport
-);
+// Admin and Manager can get stock reports
+reportRouter.post("/stock", roleMiddleware(["Admin", "Manager"]), getStockReport);
+
+reportRouter.post("/sales", roleMiddleware(["Admin", "Manager"]), getSalesReport);
+
+reportRouter.post("/out-of-stock", roleMiddleware(["Admin", "Manager"]), getOutOfStockReport);
 
 module.exports = reportRouter;

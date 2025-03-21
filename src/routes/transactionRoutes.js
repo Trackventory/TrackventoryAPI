@@ -26,6 +26,7 @@ transactionRouter.get('/', roleMiddleware(['Admin']), getAllTransactions);
 
 // Admin and Manager can view specific transactions
 transactionRouter.get('/get-by-id/:id', roleMiddleware(['Admin', 'Manager']), getTransactionById);
+
 transactionRouter.get('/get-by-type/:type', roleMiddleware(['Admin', 'Manager']), getTransactionByType);
 
 module.exports = transactionRouter;

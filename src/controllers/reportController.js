@@ -1,8 +1,6 @@
 const Product = require("../models/product");
 const Transaction = require("../models/transaction");
 
-// const mongoose = require("mongoose")
-
 // Stock Report: total quantity of each product in stock
 // category - optional parameter
 const getStockReport = async (req, res) => {
@@ -25,7 +23,7 @@ const getStockReport = async (req, res) => {
 
 // Sales Report: total quantity sold and total revenue
 // date, category, products - optional parameters
-getSalesReport = async (req, res) => {
+const getSalesReport = async (req, res) => {
   try {
     const { startDate, endDate, category, products } = req.body;
     let dateFilter = {};
