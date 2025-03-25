@@ -27,7 +27,7 @@ userRouter.get('/active-users', roleMiddleware(['Admin']), getActiveUsers);
 // Only active Admin can can view specific users
 userRouter.get('/:id', getUserById);
 
-// All active user can update their information
+// All active users can update their information
 userRouter.patch('/update', updateUser);
 
 // Only active Admin can update user role

@@ -21,8 +21,8 @@ transactionRouter.post('/stock-up', roleMiddleware(['Admin', 'Manager']), stockU
 // Active Sales Person and Admin can sell products
 transactionRouter.post('/sell-out', roleMiddleware(['Admin', 'Sales Person']), sellOut);
 
-// Only active Admin can view all transactions
-transactionRouter.get('/', roleMiddleware(['Admin']), getAllTransactions);
+// Only active Admin and Manager can view all transactions
+transactionRouter.get('/', roleMiddleware(['Admin', 'Manager']), getAllTransactions);
 
 // Only active Admin and Manager can view specific transactions
 transactionRouter.get('/get-by-id/:id', roleMiddleware(['Admin', 'Manager']), getTransactionById);
