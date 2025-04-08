@@ -15,16 +15,16 @@ const transactionRouter = express.Router();
 transactionRouter.use(authMiddleware);
 transactionRouter.use(activeUserMiddleware);
 
-// Admin and Manager can stock up inventory
+// Only active Admin and Manager can stock up inventory
 transactionRouter.post('/stock-up', roleMiddleware(['Admin', 'Manager']), stockUp);
 
-// Sales Person and Admin can sell products
+// Active Sales Person and Admin can sell products
 transactionRouter.post('/sell-out', roleMiddleware(['Admin', 'Sales Person']), sellOut);
 
-// Only Admin can view all transactions
-transactionRouter.get('/', roleMiddleware(['Admin']), getAllTransactions);
+// Only active Admin and Manager can view all transactions
+transactionRouter.get('/', roleMiddleware(['Admin', 'Manager']), getAllTransactions);
 
-// Admin and Manager can view specific transactions
+// Only active Admin and Manager can view specific transactions
 transactionRouter.get('/get-by-id/:id', roleMiddleware(['Admin', 'Manager']), getTransactionById);
 
 transactionRouter.get('/get-by-type/:type', roleMiddleware(['Admin', 'Manager']), getTransactionByType);

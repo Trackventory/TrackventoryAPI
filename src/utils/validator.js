@@ -18,9 +18,15 @@ const isValidRole = (role) => {
   return role && validRoles.includes(role.trim());
 };
 
+const isValidCategory = (category) => {
+  const validRoles = ['computers', 'phones', 'accessories'];
+  return role && validRoles.includes(role.trim());
+};
+
 module.exports = {
   isValidPhone,
   isValidEmail,
   isValidPassword,
-  isValidRole
+  isValidRole,
+  isValidCategory
 };

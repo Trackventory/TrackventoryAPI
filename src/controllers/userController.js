@@ -11,6 +11,13 @@ const getAllUsers = async (req, res) => {
     .skip(skip)
     .limit(limit);
 
+    if (!allUsers.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No users found!",
+      });
+    }
+
     const totalUsers = await User.countDocuments();
     const totalPages = Math.ceil(totalUsers / limit);
 
@@ -40,6 +47,13 @@ const getActiveUsers = async (req, res) => {
         { active: true }, "firstName lastName phone email role active"
     ).skip(skip)
      .limit(limit);
+    
+    if (!allUsers.length) {
+      return res.status(400).json({
+        success: false,
+        message: "No users found!",
+      });
+    }
 
     const totalUsers = await User.countDocuments();
     const totalPages = Math.ceil(totalUsers / limit);

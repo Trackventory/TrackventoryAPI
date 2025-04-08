@@ -1,11 +1,19 @@
 const Product = require("../models/product");
 const Transaction = require("../models/transaction");
+const { isValidCategory } = require("../utils/validator");
 
 // Stock Report: total quantity of each product in stock
 // category - optional parameter
 const getStockReport = async (req, res) => {
   try {
     const { category } = req.body;
+
+    if (category && !isValidCategory(category)) {
+      return res.status(400).json({
+          success: false,
+          message: "Invalid category. Allowed categories are: 'computers', 'phones', 'accessories'"
+      });
+    }
 
     let query = { isDeleted: false };
     if (category) query.category = category;
@@ -87,6 +95,13 @@ const getSalesReport = async (req, res) => {
 const getOutOfStockReport = async (req, res) => {
   try {
     const { category } = req.body;
+
+    if (category && !isValidCategory(category)) {
+      return res.status(400).json({
+          success: false,
+          message: "Invalid category. Allowed categories are: 'computers', 'phones', 'accessories'"
+      });
+    }
 
     let query = { quantity: 0, isDeleted: false };
     if (category) query.category = category;
